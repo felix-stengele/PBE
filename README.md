@@ -21,10 +21,10 @@ Para poder usar esta libreria necesitaremos las siguientes dependencias:
   # ./configure
   # make && make install
   ```
-  -instala [libreefare]():
-    - primero tenemos que instalar las siguientes dependencias con:
+-instala [libreefare]():
+  - primero tenemos que instalar las siguientes dependencias con:
       `sudo apt-get install autoconf automake git libtool libssol-dev pkg-config`
-    - también ejecutaremos el comando `libnfc-pn53x-examples`
+  - también ejecutaremos el comando `libnfc-pn53x-examples`
   ```bash
   # git clone https://github.com/nfc-tools/libfreefare.git
   # cd libfreefare
@@ -40,9 +40,6 @@ Para poder usar esta libreria necesitaremos las siguientes dependencias:
 
 - I, finalmente instalamos [ruby-nfc]() usando 'gem', el gestor de paquetes de Ruby. Ejecuta el siguiente comando en la terminal:
 ```bash
-sudo gem install ruby-nfc
-```
-
 sudo gem install ruby-nfc
 ```
 
