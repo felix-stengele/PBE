@@ -15,16 +15,31 @@ Para leer tarjetas NFC desde Ruby, utilizaremos la biblioteca [ruby-nfc]().
 Para poder usar esta libreria necesitaremos las siguientes dependencias:
 - libusb: 'sudo apt-get install libusb-dev'
 - [libnfc]():
-  ```# tar xjvf libnfc-1.7.1.tar.bz2
+  ```bash
+  # tar xjvf libnfc-1.7.1.tar.bz2
   # cd libnfc-1.7.1/
   # ./configure
   # make && make install
   ```
+  -instala [libreefare]():
+    - primero tenemos que instalar las siguientes dependencias con:
+      `sudo apt-get install autoconf automake git libtool libssol-dev pkg-config`
+    - también ejecutaremos el comando `libnfc-pn53x-examples`
+  ```bash
+  # git clone https://github.com/nfc-tools/libfreefare.git
+  # cd libfreefare
+  # autoreconf -vis
+  # ./configure && make && make install
+  ```
+  Si te sale el siguiente error:
+  ```mifare_key_deriver.c:141:10: error: ‘NMT_BARCODE’ undeclared (first use in this function)
+     case NMT_BARCODE:
+  ```
+  Comenta la línea 195 del archivo 'libfreefare/freefare.c'
+  i la línea 142 del archivo 'libfreefare/mifare_key_deriver.c'.
 
-Puedes instalarla fácilmente usando 'gem', el gestor de paquetes de Ruby. Ejecuta el siguiente comando en la terminal:
-`sudo gem install ruby-nfc`
-
-
+- I, finalmente instalamos [ruby-nfc]() usando 'gem', el gestor de paquetes de Ruby. Ejecuta el siguiente comando en la terminal:
 ```bash
-gem install ruby-nfc
+sudo gem install ruby-nfc
+```
 
