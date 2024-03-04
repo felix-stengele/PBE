@@ -43,3 +43,6 @@ Para poder usar esta libreria necesitaremos las siguientes dependencias:
 sudo gem install ruby-nfc
 ```
 
+sudo gem install ruby-nfc
+```
+
