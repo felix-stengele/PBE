@@ -21,7 +21,7 @@ Para poder usar esta libreria necesitaremos las siguientes dependencias:
   # ./configure
   # make && make install
   ```
--instala [libreefare](https://github.com/nfc-tools/libfreefare):
+- instala [libreefare](https://github.com/nfc-tools/libfreefare):
   - primero tenemos que instalar las siguientes dependencias con:
       `sudo apt-get install autoconf automake git libtool libssol-dev pkg-config`
   - también ejecutaremos el comando `libnfc-pn53x-examples`
@@ -32,11 +32,11 @@ Para poder usar esta libreria necesitaremos las siguientes dependencias:
   # ./configure && make && make install
   ```
   Si te sale el siguiente error:
-  'mifare_key_deriver.c:141:10: error: ‘NMT_BARCODE’ undeclared (first use in this function)
-     case NMT_BARCODE:'
+  `mifare_key_deriver.c:141:10: error: ‘NMT_BARCODE’ undeclared (first use in this function)
+     case NMT_BARCODE:`
      
   Comenta la línea 195 del archivo 'libfreefare/freefare.c'
-  i la línea 142 del archivo 'libfreefare/mifare_key_deriver.c'.
+  i la línea 142 del archivo 'libfreefare/mifare_key_deriver.c'
 
 - I, finalmente instalamos [ruby-nfc](https://github.com/hexdigest/ruby-nfc) usando 'gem', el gestor de paquetes de Ruby. Ejecuta el siguiente comando en la terminal:
 ```bash
