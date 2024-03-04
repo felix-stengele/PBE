@@ -32,9 +32,9 @@ Para poder usar esta libreria necesitaremos las siguientes dependencias:
   # ./configure && make && make install
   ```
   Si te sale el siguiente error:
-  ```mifare_key_deriver.c:141:10: error: ‘NMT_BARCODE’ undeclared (first use in this function)
-     case NMT_BARCODE:
-  ```
+  'mifare_key_deriver.c:141:10: error: ‘NMT_BARCODE’ undeclared (first use in this function)
+     case NMT_BARCODE:'
+     
   Comenta la línea 195 del archivo 'libfreefare/freefare.c'
   i la línea 142 del archivo 'libfreefare/mifare_key_deriver.c'.
 
