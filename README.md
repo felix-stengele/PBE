@@ -9,7 +9,7 @@ Este es un proyecto universitario para la lectura de uid de tarjetas NFC Mifare 
 Para poder ejecutar el código, necesitarás tener Ruby instalado en tu sistema, para ello usamos el siguiente comando:
 'sudo apt-get install ruby-full'
 
-### 2. Instalar la biblioteca `ruby-nfc`
+### 2. Instalar la biblioteca ruby-nfc
 
 Para leer tarjetas NFC desde Ruby, utilizaremos la biblioteca [ruby-nfc](). 
 Para poder usar esta libreria necesitaremos las siguientes dependencias:
