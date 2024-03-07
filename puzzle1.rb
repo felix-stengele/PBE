@@ -3,12 +3,10 @@ require 'ruby-nfc'
 class Rfid
   # Return uid in hexa str
   def read_uid
-    begin
-      puts "Apropeu la targeta al lector"
-      NFC::Reader.all[0].poll(Mifare::Classic::Tag) do |tag|
-        uid_hex = tag.uid.unpack('H*').first
-        return uid_hex
-      end
+    puts "Apropeu la targeta al lector"
+    NFC::Reader.all[0].poll(Mifare::Classic::Tag) do |tag|
+      uid_hex = tag.uid.unpack('H*').first
+      return uid_hex
     end
   end
 end
