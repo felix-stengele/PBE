@@ -37,8 +37,12 @@ function writeResponse(sql, response) {
         "Content-Type": "application/json",
       });
 
-      response.write(
-        JSON.stringify(results));
+      const jsonArray = [];
+      results.forEach(result => {
+        jsonArray.push(result);
+      });
+
+      response.write(JSON.stringify(jsonArray));
       response.end();
     });
   }) 
@@ -70,7 +74,6 @@ function searchQuery(request, response) {
         break; //sortir del for ja que sabem que no tenim dos expresions en el matei parametre
       }
     }
-    console.log(query);
     if (queryObj.parameter!='limit =') { // Ignorar el límite temporalmente
       sql = sql + ` AND ${queryObj.parameter} ${queryObj.value}`;
     }else{
