@@ -8,6 +8,15 @@ const pool = mysql.createPool({
      port: 3306
 });
 
+function objectToArray(obj) {
+  return Object.keys(obj).map(key => {
+    return {
+      parameter : key,
+      value: obj[key]
+    };
+  });
+}
+
 function writeResponse(sql, response) {
   pool.getConnection(function(err, connection) {
     if (err){
@@ -44,70 +53,33 @@ function searchQuery(request, response) {
   const reqURL = request.url;
   // PARSE
   var q = url.parse(reqURL, true); // parseamos la url
-  query = q.query;
-  param_keys = Object.keys(q.query); // retorna un array amb els parametres
-  param_values = Object.values(q.query); //retorna array amb els valors dels parametres
-  const keywordsOb={'[gt]': ' >', '[lt]':' <', '[gte]':' >=', '[lte]':' <='};
+  query = objectToArray(q.query);
+  const keywords = objectToArray({'[gt]': ' >', '[lt]':' <', '[gte]':' >=', '[lte]':' <='});
   const reserved_key = ['limit'];
-  reserved = {}
+  reserved = [];
   var sql="";
+
+
   //example.com/marks?subject=abc&name=123
-  console.log(query);
   // FOR PER CAMBIAR: param1[gt] per param1 > per fer la query SQL
-  for (let clave in query) {
-    query[clave]='= ' + query[clave];
-    for (let keyword in keywordsOb) {
-      if (clave.includes(keyword)) {
-        old = clave
-        clave = clave.replace(keyword, keywordsOb[keyword]);
-        query[clave] = query[old].replace('= ','');
-        delete query[old];
-        console.log(clave);
+  for (let queryObj of query) {
+    queryObj.parameter+=' =';
+    for(let keywordObj of keywords) {
+      if (queryObj.parameter.includes(keywordObj.parameter)) {
+        queryObj.parameter=queryObj.parameter.replace(keywordObj.parameter + ' =', keywordObj.value);
+        break; //sortir del for ja que sabem que no tenim dos expresions en el matei parametre
       }
-      console.log(query);
+    }
+    console.log(query);
+    if (queryObj.parameter!='limit =') { // Ignorar el límite temporalmente
+      sql = sql + ` AND ${queryObj.parameter} ${queryObj.value}`;
+    }else{
+      reserved.push(queryObj);
     }
   }
-
-// SELECT * FROM marks WHERE student_id = 12345678 AND mark < 9 ORDER BY asc AND subject = 'AST' LIMIT 4
-  /*for (const reserve of reserved_key) {
-    if(query.hasOwnProperty(reserve)) {
-      console.log(reserve)
-      reserved
-    }
-  }*/
-
-  /*if (param_keys.length) { //mirem que no tinguem una peticio buida sense parametres
-    for (let i = 0; i < reserved_key.length; i++) {
-      if (param_keys.includes(reserved_key[i])) {
-        reserved_found.push(param_keys.splice(i, 1)[0]);
-        reserved_values.push(param_values.splice(i, 1));
-        console.log(reserved_found);
-      }
-    }*/
-
-    /*for (let k = 0; k < param_keys.length; k++) { //for
-      param_keys[k] += " =";
-      for (let j = 0; j < keywords; j++) {
-        if (param_keys[k].includes(keywords[j]))
-          param_keys[k] = param_keys[k].replace(keywords[j + " ="], keywords_value[j]);
-        console.log(param_keys[k]);
-      }
-    }*/
-
-    for (const clave in query) {
-      sql = sql + ` AND ${clave} ${query[clave]}`;
-      console.log(sql);
-    }
-
-    /*for (let i = 0; i < param_keys.length; i++) {
-      sql = sql + ` AND ${param_keys[i]} = ${param_values[i]}`;
-      console.log(sql);
-    }
-    for (let i = 0; i < reserved_found.length; i++) {
-      sql = sql + ` ${reserved_found[i]} ${reserved_values[i]}`;
-    }*/
-    return sql+';';
-  //} 
+    for(reservedObj of reserved)
+      sql = sql + ` ${reservedObj.parameter.replace(' =', '').toUpperCase()} ${reservedObj.value}`;
+    return sql;
 }
 
 module.exports = { cercaEstudiant, searchQuery, writeResponse};
