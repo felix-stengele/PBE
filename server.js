@@ -14,14 +14,18 @@ const server = http.createServer((request, response) => {
         defaultHandler(request, response);
       }
       case "GET": {
+        console.log("recibido:");
+        console.log(q);
         if(table === "students") {
           student_id = q.query.student_id;
           console.log(student_id);
-          test = queries.cercaEstudiant(request, response);
-        }else{
-          sql = `SELECT * FROM ${table} WHERE uid = ${student_id}` + queries.searchQuery(request, response);
+          sql = `SELECT name FROM students WHERE student_id='${url.parse(request.url,true).query.student_id}';`;
           console.log(sql);
-          queries.writeResponse(sql, response);
+          queries.writeResponse(sql, response, table);
+        }else{
+          sql = `SELECT * FROM ${table} WHERE student = '${student_id}'` + queries.searchQuery(request, response);
+          console.log(sql);
+          queries.writeResponse(sql, response, table);
         }
       }
     }

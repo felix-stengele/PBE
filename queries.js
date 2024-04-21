@@ -4,7 +4,7 @@ const pool = mysql.createPool({
      host: '127.0.0.1', 
      user: 'pbe', 
      password: 'pbe',
-     database: 'db',
+     database: 'cdr',
      port: 3306
 });
 
@@ -17,7 +17,7 @@ function objectToArray(obj) {
   });
 }
 
-function writeResponse(sql, response) {
+function writeResponse(sql, response, table) {
   pool.getConnection(function(err, connection) {
     if (err){
       console.error('Error al obtener la conexión: ', err)
@@ -36,21 +36,16 @@ function writeResponse(sql, response) {
       response.writeHead(200, {
         "Content-Type": "application/json",
       });
+      const jsonArray = { [table] : [] };
 
-      const jsonArray = [];
       results.forEach(result => {
-        jsonArray.push(result);
+        jsonArray[table].push(result);
       });
-
+      console.log(JSON.stringify(jsonArray));
       response.write(JSON.stringify(jsonArray));
       response.end();
     });
   }) 
-}
-
-function cercaEstudiant(request, response){
-    sql = 'SELECT name FROM students WHERE student_id='+url.parse(request.url,true).query.student_id+';';
-    writeResponse(sql, response);
 }
 
 function searchQuery(request, response) {
@@ -82,8 +77,8 @@ function searchQuery(request, response) {
   }
     for(reservedObj of reserved)
       sql = sql + ` ${reservedObj.parameter.replace(' =', '').toUpperCase()} ${reservedObj.value}`;
-    return sql;
+    return sql +';';
 }
 
-module.exports = { cercaEstudiant, searchQuery, writeResponse};
+module.exports = {searchQuery, writeResponse};
 
