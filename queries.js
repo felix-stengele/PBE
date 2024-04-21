@@ -49,12 +49,12 @@ function writeResponse(sql, response, table) {
 }
 
 function searchQuery(request, response) {
+  const date = new Date(Date.now());
+  const now = date.getFullYear()+ '-' + (date.getMonth()+1) + '-' + date.getDate();
   const reqURL = request.url;
   var q = url.parse(reqURL, true); // parseamos la url
   query = objectToArray(q.query);
-  const keywords = objectToArray({'[gt]': ' >', '[lt]':' <', '[gte]':' >=', '[lte]':' <='});
-  const reserved_key = ['limit'];
-  reserved = [{parameter: 'ORDER BY', value :''}];
+  const keywords = objectToArray({'[gt]': ' >', '[lt]':' <', '[gte]':' >=', '[lte]':' <=', 'now': now,'Mon': 1, 'Tue': 2,'Wed': 3, 'Thu': 4, 'Fri':5});
   var sql="";
 
 
@@ -65,21 +65,41 @@ function searchQuery(request, response) {
     for(let keywordObj of keywords) {
       if (queryObj.parameter.includes(keywordObj.parameter)) {
         queryObj.parameter=queryObj.parameter.replace(keywordObj.parameter + ' =', keywordObj.value);
-        break; //sortir del for ja que sabem que no tenim dos expresions en el matei parametre
       }
+      if (queryObj.value==keywordObj.parameter)
+        queryObj.value=keywordObj.value;
     }
-    if (queryObj.parameter!='limit =') { // Ignorar el límite temporalmente
+    if(queryObj.parameter != 'limit =')
       sql = sql + ` AND ${queryObj.parameter} '${queryObj.value}'`;
-    }else{
-      reserved.push(queryObj);
-    }
   }
-    for(reservedObj of reserved) {
-      if(q.pathname='/tasks')
-        sql = sql + ` ${reservedObj.parameter} date ASC`;
-      sql = sql + ` ${reservedObj.parameter.replace(' =', '').toUpperCase()} ${reservedObj.value}`;
+  console.log(query);
+
+
+  // Ordenació per defecte en task. Primer la tasca més propera al dia d'avui
+  if (q.pathname == '/tasks')
+    sql = sql + ` ORDER BY ABS(DATEDIFF(CURRENT_DATE, date)) ASC`;
+  // Ordenació per defecte de timetables. 
+  else if (q.pathname == '/timetables') {
+    if(query.some(obj => Object.values(obj).includes("day =")))
+      diaDef = (query.find(obj => obj.parameter == 'day =')).value;
+    else
+      diaDef = date.getDay();
+    sql = sql + ` ORDER BY FIELD(day`;
+    for(let i=0; i<6;i++) {
+      dia = (diaDef+i)%6;
+      sql = sql + ` , '${dia.toString()}'`;
     }
-    return sql +';';
+    sql+=')'
+  } else if (q.pathname == 'marks')
+    sql = sql;
+
+
+  // Afegim el limit al final si està inclós en la query.
+  if (query.find(obj => Object.values(obj).includes("limit ="))) {
+    limit = (query.find(obj => obj.parameter == 'limit =')).value;
+    sql = sql + ` LIMIT ${limit}`;
+  }
+  return sql + ';';
 }
 
 module.exports = {searchQuery, writeResponse};
