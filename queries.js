@@ -75,7 +75,7 @@ function searchQuery(request, response) {
       }
     }
     if (queryObj.parameter!='limit =') { // Ignorar el límite temporalmente
-      sql = sql + ` AND ${queryObj.parameter} ${queryObj.value}`;
+      sql = sql + ` AND ${queryObj.parameter} '${queryObj.value}'`;
     }else{
       reserved.push(queryObj);
     }
