@@ -50,12 +50,11 @@ function writeResponse(sql, response, table) {
 
 function searchQuery(request, response) {
   const reqURL = request.url;
-  // PARSE
   var q = url.parse(reqURL, true); // parseamos la url
   query = objectToArray(q.query);
   const keywords = objectToArray({'[gt]': ' >', '[lt]':' <', '[gte]':' >=', '[lte]':' <='});
   const reserved_key = ['limit'];
-  reserved = [];
+  reserved = [{parameter: 'ORDER BY', value :''}];
   var sql="";
 
 
@@ -75,8 +74,11 @@ function searchQuery(request, response) {
       reserved.push(queryObj);
     }
   }
-    for(reservedObj of reserved)
+    for(reservedObj of reserved) {
+      if(q.pathname='/tasks')
+        sql = sql + ` ${reservedObj.parameter} date ASC`;
       sql = sql + ` ${reservedObj.parameter.replace(' =', '').toUpperCase()} ${reservedObj.value}`;
+    }
     return sql +';';
 }
 
