@@ -95,9 +95,9 @@ function searchQuery(request, response) {
 
 
   // Afegim el limit al final si està inclós en la query.
-  if (query.find(obj => Object.values(obj).includes("limit ="))) {
-    limit = (query.find(obj => obj.parameter == 'limit =')).value;
-    sql = sql + ` LIMIT ${limit}`;
+  const limitObj = query.find(obj => obj.parameter === 'limit =');
+  if (limitObj) {
+    sql = `${sql} LIMIT ${limitObj.value}`;
   }
   return sql + ';';
 }
